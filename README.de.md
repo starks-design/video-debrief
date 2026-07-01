@@ -18,7 +18,7 @@ im Terminal.
 
 ![Beispiel-Report: eine NVIDIA-GTC-2026-Keynote als Zusammenfassung und durchsuchbare Timeline](assets/report-preview.png)
 
-<sub>Eine 4:41 lange NVIDIA-GTC-2026-Keynote → Zusammenfassung, Key Facts und eine durchsuchbare Transcript-Timeline. **[▶ Interaktiven Report öffnen](https://htmlpreview.github.io/?https://github.com/starks-design/video-debrief/blob/main/examples/example-report.html)** (über http, damit der Player inline läuft).</sub>
+<sub>Eine 4:41 lange NVIDIA-GTC-2026-Keynote → Zusammenfassung, Key Facts und eine durchsuchbare Transcript-Timeline. **[▶ Interaktiven Report öffnen](https://starks-design.github.io/video-debrief/examples/example-report.html)** (über http, damit der Player inline läuft).</sub>
 
 ---
 
