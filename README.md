@@ -1,183 +1,182 @@
 # Video Debrief
 
-**Sieh dir das Video nicht an — lass es dir zusammenfassen.**
+**Don't watch the video — have it summarized.**
 
-Video Debrief verwandelt jedes Video — Webinar, Werbespot, Tutorial, eigenes
-Recording — in Minuten in eine **Zusammenfassung** plus eine durchsuchbare
-**Timeline** aus Transcript und Bildbeschreibung. Du sparst dir das Ansehen und
-behältst trotzdem alles: jede Zahl, jeden eingeblendeten Text, jeden Schnitt.
+*🇩🇪 Deutsche Version: [README.de.md](README.de.md)*
 
-Und das Beste: **alles läuft lokal.** Kein Cloud-Upload, kein API-Zwang, keine
-fremden Server. Ein lokales Vision-Modell beschreibt die Bilder, Whisper
-transkribiert das Audio, dein Agent schreibt die Summary. Dein Material bleibt
-auf deiner Maschine.
+Video Debrief turns any video — webinar, ad, tutorial, your own recording — into a
+**summary** plus a searchable **timeline** built from transcript and image
+descriptions, in minutes. You skip the watching and still keep everything: every
+number, every on-screen text, every cut.
 
-Video Debrief ist ein **Skill für Claude Code** (läuft auch in Cursor und anderen
-agentischen Systemen) — und die Python-Pipeline funktioniert genauso standalone
-im Terminal.
+And the best part: **it all runs locally.** No cloud upload, no forced API, no
+third-party servers. A local vision model describes the frames, Whisper transcribes
+the audio, your agent writes the summary. Your material stays on your machine.
 
----
-
-## Was es macht (4 lokale Stufen)
-
-1. **Download / Locate** — `yt-dlp` lädt das Video (URL) oder nimmt deine lokale Datei.
-2. **Scene-Detection** — `ffmpeg` findet jeden harten Schnitt + Heartbeat-Frames in langen statischen Passagen.
-3. **Transcript** — Auto-Captions, `whisper.cpp` oder `faster-whisper` (du wählst).
-4. **Vision** — ein lokales Vision-Modell beschreibt jeden Scene-Frame in 5 Sätzen inkl. OCR.
-
-Ergebnis: `report.html` (Player + klickbare Timeline + Insight-Marker + Summary)
-und `debrief_result.json` (alle Rohdaten). Beispiel: `examples/example-report.html`.
+Video Debrief is a **skill for Claude Code** (also runs in Cursor and other agentic
+systems) — and the Python pipeline works just as well standalone in the terminal.
 
 ---
 
-## Schnellstart (mit Agent — empfohlen)
+## What it does (4 local stages)
 
-Wirf **`INSTALL.md`** in deinen Agenten (Claude Code o.ä.). Er erkennt dein OS,
-prüft die Tools, findet dein lokales LLM-Backend, wählt ein Vision-Modell und
-schreibt die `debrief.config.json`. Danach:
+1. **Download / Locate** — `yt-dlp` fetches the video (URL) or takes your local file.
+2. **Scene detection** — `ffmpeg` finds every hard cut plus heartbeat frames in long static passages.
+3. **Transcript** — auto-captions, `whisper.cpp` or `faster-whisper` (your choice).
+4. **Vision** — a local vision model describes every scene frame in 5 sentences, including OCR.
+
+Result: `report.html` (player + clickable timeline + insight markers + summary)
+and `debrief_result.json` (all raw data). Example: `examples/example-report.html`.
+
+---
+
+## Quick start (with an agent — recommended)
+
+Drop **`INSTALL.md`** into your agent (Claude Code or similar). It detects your OS,
+checks the tools, finds your local LLM backend, picks a vision model, and writes
+the `debrief.config.json`. Then:
 
 ```
 /debrief https://www.youtube.com/watch?v=…
 ```
 
-oder direkt:
+or directly:
 
 ```bash
 python3 scripts/debrief.py "https://www.youtube.com/watch?v=…"
-python3 scripts/debrief.py "/pfad/zu/meinem-video.mp4"
+python3 scripts/debrief.py "/path/to/my-video.mp4"
 ```
 
 ---
 
-## Manuelles Setup
+## Manual setup
 
-### 1. ffmpeg + yt-dlp (Pflicht)
+### 1. ffmpeg + yt-dlp (required)
 
-Scene-Detection, Frame-Extraktion und Audio brauchen **ffmpeg/ffprobe**, der
-Download braucht **yt-dlp**.
+Scene detection, frame extraction and audio need **ffmpeg/ffprobe**; the download
+needs **yt-dlp**.
 
-| OS | Befehl |
-|----|--------|
+| OS | Command |
+|----|---------|
 | macOS | `brew install ffmpeg yt-dlp` |
 | Linux (Debian/Ubuntu) | `sudo apt install ffmpeg` · `pipx install yt-dlp` |
-| Windows | `winget install Gyan.FFmpeg yt-dlp.yt-dlp` (oder `choco install ffmpeg yt-dlp`) |
+| Windows | `winget install Gyan.FFmpeg yt-dlp.yt-dlp` (or `choco install ffmpeg yt-dlp`) |
 
 Test: `ffmpeg -version` · `ffprobe -version` · `yt-dlp --version`.
 
-### 2. Scene-Detection (kein extra Tool — nur Verständnis)
+### 2. Scene detection (no extra tool — just context)
 
-Video Debrief extrahiert Frames bei jedem erkannten Schnitt. Gesteuert über
-`scene.threshold` in der Config (Default `0.3`):
+Video Debrief extracts a frame at every detected cut, controlled by
+`scene.threshold` in the config (default `0.3`):
 
-- **Zu wenige Frames?** (cut-arme Talking-Heads/Slides) → Threshold senken, z.B. `0.2`, oder per Flag: `--scene-threshold 0.2`.
-- **Zu viele Frames?** (sehr schnittlastig) → Threshold erhöhen (`0.4`–`0.5`) oder `--max-frames 80` setzen.
-- `scene.heartbeat_seconds` (Default `30`) erzwingt zusätzlich alle N Sekunden einen Frame in langen statischen Passagen, damit nichts durchrutscht.
+- **Too few frames?** (cut-sparse talking heads/slides) → lower the threshold, e.g. `0.2`, or via flag: `--scene-threshold 0.2`.
+- **Too many frames?** (very cut-heavy) → raise the threshold (`0.4`–`0.5`) or set `--max-frames 80`.
+- `scene.heartbeat_seconds` (default `30`) additionally forces a frame every N seconds in long static passages, so nothing slips through.
 
-### 3. Transcript — drei Wege
+### 3. Transcript — three ways
 
-Setze `whisper.mode` in der Config:
+Set `whisper.mode` in the config:
 
-- **`auto`** (Default) — bei URLs zuerst Auto-Captions (`yt-dlp`, gratis, instant); keine Captions oder lokale Datei → Fallback `whisper.cpp`.
-- **`captions`** — nur Auto-Captions. Best-effort, abhängig davon ob das Video welche hat. Für sichere Transcripte in beliebiger Sprache nimm `whisper`.
-- **`whisper`** — [whisper.cpp](https://github.com/ggml-org/whisper.cpp). Installiere `whisper-cli` und ein ggml-Modell, trage den Pfad in `whisper.model_path` ein:
+- **`auto`** (default) — for URLs, auto-captions first (`yt-dlp`, free, instant); no captions or a local file → fallback to `whisper.cpp`.
+- **`captions`** — auto-captions only. Best-effort, depends on whether the video has any. For reliable transcripts in any language use `whisper`.
+- **`whisper`** — [whisper.cpp](https://github.com/ggml-org/whisper.cpp). Install `whisper-cli` and a ggml model, then set the path in `whisper.model_path`:
   ```bash
-  brew install whisper-cpp          # macOS; Linux/Windows: siehe whisper.cpp README
-  # ggml-Modell laden, z.B. large-v3-turbo, und Pfad in die Config:
-  #   "whisper": { "mode": "whisper", "model_path": "/pfad/ggml-large-v3-turbo.bin" }
+  brew install whisper-cpp          # macOS; Linux/Windows: see the whisper.cpp README
+  # download a ggml model, e.g. large-v3-turbo, and set the path in the config:
+  #   "whisper": { "mode": "whisper", "model_path": "/path/ggml-large-v3-turbo.bin" }
   ```
-- **`faster-whisper`** — reines pip-Paket, kein C-Build:
+- **`faster-whisper`** — pure pip package, no C build:
   ```bash
   pip install faster-whisper
   # "whisper": { "mode": "faster-whisper", "model_path": "large-v3" }
   ```
 
-### 4. Vision-Backend (lokales LLM)
+### 4. Vision backend (local LLM)
 
-Video Debrief spricht jede **OpenAI-kompatible** Chat-API an. Trage Endpoint +
-Modell in `vision` ein. Drei gängige Backends:
+Video Debrief talks to any **OpenAI-compatible** chat API. Set the endpoint and
+model in `vision`. Three common backends:
 
 | Backend | `vision.base_url` | `vision.backend` |
 |---------|-------------------|------------------|
-| **Ollama** (Default) | `http://localhost:11434/v1/chat/completions` | `ollama` |
+| **Ollama** (default) | `http://localhost:11434/v1/chat/completions` | `ollama` |
 | **LM Studio** | `http://localhost:1234/v1/chat/completions` | `lmstudio` |
 | **oMLX** (Apple Silicon) | `http://localhost:8000/v1/chat/completions` | `omlx` |
 
-Als `vision.model` ein **vision-fähiges** Modell eintragen (Qwen-VL- oder
-Gemma-Vision-Familie). Welche Tags dein Backend kennt, listet:
+Set a **vision-capable** model as `vision.model` (Qwen-VL or Gemma-Vision family).
+List the tags your backend knows:
 
 ```bash
 curl -s http://localhost:11434/api/tags          # Ollama
 curl -s http://localhost:1234/v1/models           # LM Studio
 ```
 
-> **Hinweis zur Verifikation:** Diese Pipeline wurde live gegen **oMLX** getestet.
-> Ollama und LM Studio nutzen dieselbe OpenAI-kompatible Schnittstelle und sind
-> dokumentiert, aber **nicht live verifiziert** — exakte Modell-Tags variieren je
-> nach installierter Version, prüfe sie über die obigen Endpoints.
+> **Verification note:** This pipeline was tested live against **oMLX**. Ollama and
+> LM Studio use the same OpenAI-compatible interface and are documented, but **not
+> live-verified** — exact model tags vary by installed version, so check them via
+> the endpoints above.
 
-Braucht dein Backend einen API-Key, leg ihn in eine ENV-Variable und trage deren
-**Namen** in `vision.api_key_env` ein (z.B. `"OPENAI_API_KEY"`). Video Debrief liest
-den Key zur Laufzeit aus der ENV — er steht nie in einer Datei.
+If your backend needs an API key, put it in an ENV variable and set the **name** of
+that variable in `vision.api_key_env` (e.g. `"OPENAI_API_KEY"`). Video Debrief reads
+the key at runtime from the ENV — it never lands in a file.
 
-### 5. Insights & Summary
+### 5. Insights & summary
 
-- `insights` nutzt dasselbe (oder ein anderes) lokales LLM, um 10–15 Kernaussagen mit Timestamps zu ziehen. Abschaltbar via `"insights": { "enabled": false }`.
+- `insights` uses the same (or another) local LLM to pull 10–15 key statements with timestamps. Disable via `"insights": { "enabled": false }`.
 - `summary.engine`:
-  - **`host-agent`** (Default) — die Pipeline legt einen fertigen Prompt als `SUMMARY_TODO.md` ab; dein Agent (Claude Code) schreibt die Summary in den Report. Beste Qualität, kein extra Modell nötig.
-  - **`local-llm`** — die Pipeline ruft selbst ein LLM (`summary.base_url` / `summary.model`). Für Standalone-Betrieb ohne Agent.
-  - **`none`** — keine Summary.
+  - **`host-agent`** (default) — the pipeline drops a ready-made prompt as `SUMMARY_TODO.md`; your agent (Claude Code) writes the summary into the report. Best quality, no extra model needed.
+  - **`local-llm`** — the pipeline calls an LLM itself (`summary.base_url` / `summary.model`). For standalone use without an agent.
+  - **`none`** — no summary.
 
-### 6. Aufräumen — was nach der Analyse bleibt (Privacy)
+### 6. Cleanup — what stays after analysis (privacy)
 
-Video Debrief **löscht nach der Analyse das heruntergeladene Video und die
-extrahierten Frame-Bilder wieder** — übrig bleiben nur der Report (`report.html`)
-und die Rohdaten (`debrief_result.json`). Das ist Absicht: nichts Schweres
-bleibt liegen, und sensibles Material verschwindet von der Platte, sobald es
-analysiert ist.
+Video Debrief **deletes the downloaded video and the extracted frame images after
+analysis** — all that stays is the report (`report.html`) and the raw data
+(`debrief_result.json`). That's by design: nothing heavy is left lying around, and
+sensitive material disappears from disk as soon as it's analyzed.
 
-- Gesteuert über `cleanup.delete_video` und `cleanup.delete_frames` (beide Default **an**).
-- Bei **YouTube-URLs** braucht der Report keine lokale Videodatei: über einen Server / dein Dashboard (`http`) spielt er inline mit mitlaufendem Transcript; per Doppelklick (`file://`, wo YouTube Embeds blockt) zeigt er das Thumbnail, dessen Timeline-Klicks das Video auf YouTube an der jeweiligen Sekunde öffnen.
-- Bei **lokalen Dateien** bleibt dein Original natürlich unberührt (es wird nie kopiert); im Report steht dann ein Hinweis, dass das Arbeitsvideo gelöscht wurde — die Timeline funktioniert trotzdem.
-- Willst du Video/Frames behalten (z.B. zum Debuggen), setze die Flags auf `false`.
+- Controlled by `cleanup.delete_video` and `cleanup.delete_frames` (both default **on**).
+- For **YouTube URLs** the report needs no local video file: served over a server / your dashboard (`http`) it plays inline with a synced transcript; on double-click (`file://`, where YouTube blocks embeds) it shows the thumbnail, whose timeline clicks open the video on YouTube at the given second.
+- For **local files** your original stays untouched (it's never copied); the report then notes that the working video was deleted — the timeline still works.
+- Want to keep video/frames (e.g. for debugging)? Set the flags to `false`.
 
 ---
 
-## Config-Referenz
+## Config reference
 
-Kopiere `debrief.config.example.json` nach `debrief.config.json` und passe an.
-Suchreihenfolge: `$DEBRIEF_CONFIG` → `./debrief.config.json` → `~/.debrief/config.json`.
+Copy `debrief.config.example.json` to `debrief.config.json` and adjust.
+Lookup order: `$DEBRIEF_CONFIG` → `./debrief.config.json` → `~/.debrief/config.json`.
 
-| Schlüssel | Bedeutung |
-|-----------|-----------|
-| `output_dir` | Wohin Reports geschrieben werden (Default `./debrief-output`) |
-| `vision.base_url` / `.model` / `.backend` / `.api_key_env` | Vision-Endpoint, Modell, Backend-Typ, ENV-Name des Keys |
-| `vision.context_window` | Wie viele vorherige Frame-Beschreibungen als Kontext (Drift-Vermeidung), Default 2 |
-| `insights.*` | Endpoint/Modell/Key fürs Insight-LLM · `enabled` |
-| `whisper.mode` / `.bin` / `.model_path` / `.language` | Transcript-Modus + whisper.cpp-Binary/Modell + Sprache (`auto`) |
+| Key | Meaning |
+|-----|---------|
+| `output_dir` | Where reports are written (default `./debrief-output`) |
+| `vision.base_url` / `.model` / `.backend` / `.api_key_env` | Vision endpoint, model, backend type, ENV name of the key |
+| `vision.context_window` | How many previous frame descriptions to pass as context (drift avoidance), default 2 |
+| `insights.*` | Endpoint/model/key for the insight LLM · `enabled` |
+| `whisper.mode` / `.bin` / `.model_path` / `.language` | Transcript mode + whisper.cpp binary/model + language (`auto`) |
 | `summary.engine` / `.base_url` / `.model` | `host-agent` \| `local-llm` \| `none` |
-| `relevance.enabled` / `.profile` | Optionaler „Relevanz für dich"-Block + dein Profil |
-| `branding.footer` | Dezenter „Made with Video Debrief"-Footer im Report (Default `true`) |
-| `scene.threshold` / `.heartbeat_seconds` / `.max_frames` | Scene-Detection-Tuning |
-| `cleanup.delete_video` / `.delete_frames` | Nach der Analyse Video + Frames löschen (Default **an**) — nur Report + JSON bleiben |
+| `relevance.enabled` / `.profile` | Optional "relevance for you" block + your profile |
+| `branding.footer` | Subtle "Made with Video Debrief" footer in the report (default `true`) |
+| `scene.threshold` / `.heartbeat_seconds` / `.max_frames` | Scene-detection tuning |
+| `cleanup.delete_video` / `.delete_frames` | Delete video + frames after analysis (default **on**) — only report + JSON stay |
 
 ---
 
 ## Troubleshooting
 
-| Problem | Lösung |
-|---------|--------|
-| `ffmpeg/ffprobe not found` | ffmpeg installieren (siehe oben) |
-| Scene-Detection liefert 0 Frames | `scene.threshold` senken (`0.2`) |
-| Vision-Antwort leer / Fehler | Backend läuft? `vision.base_url` korrekt? Modell vision-fähig + gepullt? |
-| `whisper-cli not in PATH` | `whisper.mode` auf `captions`/`faster-whisper` stellen oder whisper.cpp installieren |
-| Summary fehlt im Report | `summary.engine`? Bei `host-agent`: `SUMMARY_TODO.md` abarbeiten lassen |
+| Problem | Fix |
+|---------|-----|
+| `ffmpeg/ffprobe not found` | install ffmpeg (see above) |
+| Scene detection returns 0 frames | lower `scene.threshold` (`0.2`) |
+| Vision response empty / error | backend running? `vision.base_url` correct? model vision-capable + pulled? |
+| `whisper-cli not in PATH` | set `whisper.mode` to `captions`/`faster-whisper`, or install whisper.cpp |
+| Summary missing from report | check `summary.engine`? With `host-agent`: have `SUMMARY_TODO.md` processed |
 
 ---
 
-## Lizenz & Herkunft
+## License & origin
 
-Apache License 2.0 (siehe `LICENSE`) — nutzbar auch kommerziell, solange Copyright
-und `NOTICE` erhalten bleiben; die Marke „Starks.Design" ist davon ausgenommen.
-Gebaut von **[Starks.Design](https://starks.design)**.
-Wenn dir Video Debrief hilft: behalte den dezenten Footer im Report — oder schalte
-ihn via `branding.footer: false` ab. Kein Zwang.
+Apache License 2.0 (see `LICENSE`) — free to use, including commercially, as long
+as the copyright and `NOTICE` are preserved; the "Starks.Design" trademark is
+excluded. Built by **[Starks.Design](https://starks.design)**. If Video Debrief
+helps you: keep the subtle footer in the report — or turn it off via
+`branding.footer: false`. No strings attached.
