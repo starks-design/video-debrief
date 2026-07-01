@@ -1,5 +1,10 @@
 # Video Debrief
 
+![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue)
+![Platform](https://img.shields.io/badge/platform-macOS·Linux·Windows-lightgrey)
+![Runs 100% local](https://img.shields.io/badge/runs-100%25_local-brightgreen)
+![Claude Code skill](https://img.shields.io/badge/Claude_Code-skill-8A5CF6)
+
 **Don't watch the video — have it summarized.**
 
 *🇩🇪 Deutsche Version: [README.de.md](README.de.md)*
@@ -8,6 +13,12 @@ Video Debrief turns any video — webinar, ad, tutorial, your own recording — 
 **summary** plus a searchable **timeline** built from transcript and image
 descriptions, in minutes. You skip the watching and still keep everything: every
 number, every on-screen text, every cut.
+
+**Why it's different:**
+- **100% local** — no cloud upload, no forced API. Your material never leaves your machine.
+- **Cleans up after itself** — deletes the downloaded video + frames after analysis; only the report stays.
+- **Any backend** — Ollama, LM Studio or oMLX via one OpenAI-compatible endpoint. macOS, Linux, Windows.
+- **Agent-native** — a Claude Code skill (`/debrief <url>`), plus a standalone Python pipeline.
 
 And the best part: **it all runs locally.** No cloud upload, no forced API, no
 third-party servers. A local vision model describes the frames, Whisper transcribes
