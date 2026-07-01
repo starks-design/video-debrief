@@ -16,6 +16,10 @@ Video Debrief ist ein **Skill für Claude Code** (läuft auch in Cursor und ande
 agentischen Systemen) — und die Python-Pipeline funktioniert genauso standalone
 im Terminal.
 
+![Beispiel-Report: eine NVIDIA-GTC-2026-Keynote als Zusammenfassung und durchsuchbare Timeline](assets/report-preview.png)
+
+<sub>Eine 4:41 lange NVIDIA-GTC-2026-Keynote → Zusammenfassung, Key Facts und eine durchsuchbare Transcript-Timeline. **[▶ Interaktiven Report öffnen](https://htmlpreview.github.io/?https://github.com/starks-design/video-debrief/blob/main/examples/example-report.html)** (über http, damit der Player inline läuft).</sub>
+
 ---
 
 ## Was es macht (4 lokale Stufen)
