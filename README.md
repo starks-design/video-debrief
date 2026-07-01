@@ -27,6 +27,10 @@ the audio, your agent writes the summary. Your material stays on your machine.
 Video Debrief is a **skill for Claude Code** (also runs in Cursor and other agentic
 systems) — and the Python pipeline works just as well standalone in the terminal.
 
+![Example report: a NVIDIA GTC 2026 keynote turned into a summary and a searchable timeline](assets/report-preview.png)
+
+<sub>A 4:41 NVIDIA GTC 2026 keynote → summary, key facts and a searchable transcript timeline. **[▶ Open the interactive report](https://htmlpreview.github.io/?https://github.com/starks-design/video-debrief/blob/main/examples/example-report.html)** (served over http, so the player runs inline).</sub>
+
 ---
 
 ## What it does (4 local stages)
