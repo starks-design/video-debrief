@@ -1,0 +1,5 @@
+debrief.config.json
+debrief-output/
+__pycache__/
+*.pyc
+.DS_Store

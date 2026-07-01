@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster) — Video Debrief</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#0d0b0b; color:#f1ebe5; font-family:'Inter',-apple-system,system-ui,sans-serif;
+         font-size:15px; line-height:1.6; }
+  a { color:#C2A878; }
+  .mono,.ts { font-family:ui-monospace,'JetBrains Mono',monospace; }
+  .wrap { max-width:1400px; margin:0 auto; padding:1.5em; }
+  header { margin-bottom:1.2em; }
+  header h1 { font-size:1.5em; font-weight:700; margin-bottom:0.3em; }
+  header .meta { font-family:ui-monospace,monospace; font-size:0.78em; color:#666;
+                  display:flex; flex-wrap:wrap; gap:1.2em; }
+  .top-row { display:grid; grid-template-columns:1fr 1fr; gap:1.5em; align-items:start; margin-bottom:1.5em; }
+  @media(max-width:900px) { .top-row { grid-template-columns:1fr; } }
+  #player-wrap { position:relative; aspect-ratio:16/9; background:#000; border-radius:8px; overflow:hidden; }
+  #player-wrap video { width:100%; height:100%; }
+  #yt-link { position:absolute; top:0.6em; right:0.6em; background:rgba(0,0,0,0.7);
+              color:#C2A878; padding:0.3em 0.8em; border-radius:4px; font-size:0.75em;
+              text-decoration:none; font-family:ui-monospace,monospace; }
+  .tl-panel { overflow-y:auto; padding-right:0.5em; max-height:min(70vh, 500px); }
+  .tl-panel h2 { font-size:0.9em; font-weight:600; color:#C2A878; margin:0 0 0.5em;
+                  padding-bottom:0.3em; border-bottom:1px solid #222; position:sticky;
+                  top:0; background:#0d0b0b; z-index:1; }
+  .tl-row { padding:0.4em 0.6em; border-radius:5px; cursor:pointer; display:flex; gap:0.5em;
+             border-bottom:1px solid #141210; }
+  .tl-row:hover { background:#1a1816; }
+  .tl-row.active { background:#2a2420; border-left:3px solid #C2A878; }
+  .tl-row .ts { font-size:0.72em; color:#C2A878; white-space:nowrap; min-width:5em; padding-top:0.15em; }
+  .tl-row .txt { font-size:0.82em; color:#d5cfc8; }
+  .tl-row.has-insight { background:#1a1510; border-left:3px solid #C2A878; padding:0.7em 0.6em; margin:0.3em 0; }
+  .insight-marker { display:inline-block; font-size:0.7em; font-weight:700; color:#0d0b0b;
+                     background:#C2A878; padding:0.15em 0.6em; border-radius:3px;
+                     font-family:ui-monospace,monospace; margin-bottom:0.35em; text-transform:uppercase; }
+  #summary { margin-bottom:1.5em; }
+  #summary h2 { font-size:1.1em; font-weight:600; color:#C2A878; margin:0 0 0.6em;
+                 border-bottom:1px solid #222; padding-bottom:0.4em; }
+  .summary-body { background:#141210; border-radius:8px; padding:1.2em 1.5em; font-size:0.9em; line-height:1.7; }
+  .summary-body h3 { font-size:0.9em; font-weight:600; color:#C2A878; margin:1em 0 0.3em; }
+  .summary-body h3:first-child { margin-top:0; }
+  .summary-body ul { margin:0.3em 0 0.3em 1.5em; }
+  .key-insights { background:#1a1510; border-left:3px solid #C2A878; padding:0.8em 1.1em; border-radius:6px; margin-bottom:1em; }
+  .key-insights h3 { margin-top:0; }
+  .kf-stats { display:flex; flex-wrap:wrap; gap:0.7em; margin:0.6em 0; }
+  .kf-stats .stat { background:#0d0b0b; border:1px solid #222; border-radius:6px; padding:0.6em 0.9em; min-width:7em; }
+  .kf-stats .stat .v { display:block; font-size:1.3em; font-weight:700; font-family:ui-monospace,monospace; color:#C2A878; }
+  .kf-stats .stat .l { display:block; font-size:0.72em; color:#8a847d; margin-top:0.2em; }
+  .kf-rest { margin:0.4em 0 0.4em 1.2em; }
+  .placeholder { color:#555; font-style:italic; }
+  .relevance { background:#1a1510; border:1px solid #C2A878; border-radius:8px; padding:1.2em 1.5em; margin-top:1em; }
+  .relevance h3 { color:#C2A878; margin:0 0 0.5em; font-size:0.95em; }
+  .stats { display:flex; flex-wrap:wrap; gap:0.8em; margin-top:1.5em; }
+  .stat-box { background:#141210; border-radius:6px; padding:0.6em 1em; }
+  .stat-box .label { font-size:0.65em; text-transform:uppercase; letter-spacing:0.08em; color:#555; }
+  .stat-box .val { font-size:1.1em; font-weight:700; font-family:ui-monospace,monospace; }
+  #player-wrap iframe { width:100%; height:100%; border:0; }
+  #dw-yt-player { position:absolute; inset:0; width:100%; height:100%; }
+  #yt-poster { display:block; width:100%; height:100%; background-size:cover; background-position:center; position:relative; }
+  #yt-poster .yt-play { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+                         width:68px; height:48px; border-radius:12px; background:rgba(20,18,16,0.78); transition:background 0.15s; }
+  #yt-poster .yt-play::after { content:""; position:absolute; top:50%; left:53%; transform:translate(-50%,-50%);
+                                border-style:solid; border-width:11px 0 11px 18px; border-color:transparent transparent transparent #f1ebe5; }
+  #yt-poster:hover .yt-play { background:#C2A878; }
+  #yt-poster:hover .yt-play::after { border-left-color:#0d0b0b; }
+  #player-wrap.no-video { display:flex; align-items:center; justify-content:center; text-align:center; padding:1.5em; }
+  #player-wrap.no-video div { font-size:0.82em; color:#9a948c; line-height:1.6; }
+  #player-wrap.no-video strong { color:#C2A878; }
+  footer { margin-top:2.5em; padding-top:1.2em; border-top:1px solid #1a1a1a;
+            display:flex; align-items:center; justify-content:center; gap:1.2em; flex-wrap:wrap; }
+  footer .made { font-size:0.78em; color:#777; }
+  footer .made strong { color:#C2A878; font-weight:600; }
+  footer .brand { display:inline-flex; align-items:center; color:#8a847d; transition:color 0.15s; text-decoration:none; }
+  footer .brand:hover { color:#C2A878; }
+  footer .starks-logo { height:1.4em; width:auto; display:block; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster)</h1>
+    <div class="meta">
+      <span>Rick Astley</span>
+      <span>03:33.06</span>
+      <span>60 Segmente</span>
+      <span>85s lokal</span>
+    </div>
+  </header>
+
+  <div class="top-row">
+    <div id="player-wrap"><a id="yt-poster" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener" style="background-image:url('https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg')"><span class="yt-play"></span></a></div>
+    <div class="tl-panel">
+      <h2>Transcript</h2>
+      <div class="tl-row" data-ts="1" onclick="seekTo(1)"><span class="ts">[00:01.36]</span><span class="txt">[♪♪♪]</span></div><div class="tl-row" data-ts="18" onclick="seekTo(18)"><span class="ts">[00:18.64]</span><span class="txt">♪ We're no strangers to love ♪</span></div><div class="tl-row" data-ts="22" onclick="seekTo(22)"><span class="ts">[00:22.64]</span><span class="txt">♪ You know the rules and so do I ♪</span></div><div class="tl-row" data-ts="27" onclick="seekTo(27)"><span class="ts">[00:27.04]</span><span class="txt">♪ A full commitment's what I'm thinking of ♪</span></div><div class="tl-row" data-ts="31" onclick="seekTo(31)"><span class="ts">[00:31.12]</span><span class="txt">♪ You wouldn't get this from any other guy ♪</span></div><div class="tl-row" data-ts="35" onclick="seekTo(35)"><span class="ts">[00:35.16]</span><span class="txt">♪ I just wanna tell you how I'm feeling ♪</span></div><div class="tl-row" data-ts="40" onclick="seekTo(40)"><span class="ts">[00:40.52]</span><span class="txt">♪ Gotta make you understand ♪</span></div><div class="tl-row" data-ts="43" onclick="seekTo(43)"><span class="ts">[00:43.00]</span><span class="txt">♪ Never gonna give you up ♪</span></div><div class="tl-row" data-ts="45" onclick="seekTo(45)"><span class="ts">[00:45.20]</span><span class="txt">♪ Never gonna let you down ♪</span></div><div class="tl-row" data-ts="47" onclick="seekTo(47)"><span class="ts">[00:47.32]</span><span class="txt">♪ Never gonna run around and desert you ♪</span></div><div class="tl-row" data-ts="51" onclick="seekTo(51)"><span class="ts">[00:51.48]</span><span class="txt">♪ Never gonna make you cry ♪</span></div><div class="tl-row" data-ts="53" onclick="seekTo(53)"><span class="ts">[00:53.60]</span><span class="txt">♪ Never gonna say goodbye ♪</span></div><div class="tl-row" data-ts="55" onclick="seekTo(55)"><span class="ts">[00:55.72]</span><span class="txt">♪ Never gonna tell a lie and hurt you ♪</span></div><div class="tl-row" data-ts="60" onclick="seekTo(60)"><span class="ts">[01:00.80]</span><span class="txt">♪ We've known each other for so long ♪</span></div><div class="tl-row" data-ts="64" onclick="seekTo(64)"><span class="ts">[01:04.88]</span><span class="txt">♪ Your heart's been aching but you're too shy to say it ♪</span></div><div class="tl-row" data-ts="69" onclick="seekTo(69)"><span class="ts">[01:09.12]</span><span class="txt">♪ Inside we both know what's been going ♪</span></div><div class="tl-row" data-ts="73" onclick="seekTo(73)"><span class="ts">[01:13.36]</span><span class="txt">♪ We know the game and we're gonna play it ♪</span></div><div class="tl-row" data-ts="77" onclick="seekTo(77)"><span class="ts">[01:17.40]</span><span class="txt">♪ And if you ask me how I'm feeling ♪</span></div><div class="tl-row" data-ts="82" onclick="seekTo(82)"><span class="ts">[01:22.40]</span><span class="txt">♪ Don't tell me you're too blind to see ♪</span></div><div class="tl-row" data-ts="85" onclick="seekTo(85)"><span class="ts">[01:25.32]</span><span class="txt">♪ Never gonna give you up ♪</span></div><div class="tl-row" data-ts="87" onclick="seekTo(87)"><span class="ts">[01:27.36]</span><span class="txt">♪ Never gonna let you down ♪</span></div><div class="tl-row" data-ts="89" onclick="seekTo(89)"><span class="ts">[01:29.44]</span><span class="txt">♪ Never gonna run around and desert you ♪</span></div><div class="tl-row" data-ts="93" onclick="seekTo(93)"><span class="ts">[01:33.80]</span><span class="txt">♪ Never gonna make you cry ♪</span></div><div class="tl-row" data-ts="95" onclick="seekTo(95)"><span class="ts">[01:35.76]</span><span class="txt">♪ Never gonna say goodbye ♪</span></div><div class="tl-row" data-ts="98" onclick="seekTo(98)"><span class="ts">[01:38.08]</span><span class="txt">♪ Never gonna tell a lie and hurt you ♪</span></div><div class="tl-row" data-ts="102" onclick="seekTo(102)"><span class="ts">[01:42.20]</span><span class="txt">♪ Never gonna give you up ♪</span></div><div class="tl-row" data-ts="104" onclick="seekTo(104)"><span class="ts">[01:44.28]</span><span class="txt">♪ Never gonna let you down ♪</span></div><div class="tl-row" data-ts="106" onclick="seekTo(106)"><span class="ts">[01:46.48]</span><span class="txt">♪ Never gonna run around and desert you ♪</span></div><div class="tl-row" data-ts="110" onclick="seekTo(110)"><span class="ts">[01:50.76]</span><span class="txt">♪ Never gonna make you cry ♪</span></div><div class="tl-row" data-ts="112" onclick="seekTo(112)"><span class="ts">[01:52.80]</span><span class="txt">♪ Never gonna say goodbye ♪</span></div><div class="tl-row" data-ts="114" onclick="seekTo(114)"><span class="ts">[01:54.96]</span><span class="txt">♪ Never gonna tell a lie and hurt you ♪</span></div><div class="tl-row" data-ts="119" onclick="seekTo(119)"><span class="ts">[01:59.84]</span><span class="txt">♪ (Ooh, give you up) ♪</span></div><div class="tl-row" data-ts="128" onclick="seekTo(128)"><span class="ts">[02:08.48]</span><span class="txt">♪ Never gonna give, never gonna give ♪</span></div><div class="tl-row" data-ts="130" onclick="seekTo(130)"><span class="ts">[02:10.24]</span><span class="txt">♪ (Give you up) ♪</span></div><div class="tl-row" data-ts="132" onclick="seekTo(132)"><span class="ts">[02:12.48]</span><span class="txt">♪ Never gonna give, never gonna give ♪</span></div><div class="tl-row" data-ts="134" onclick="seekTo(134)"><span class="ts">[02:14.36]</span><span class="txt">♪ (Give you up) ♪</span></div><div class="tl-row" data-ts="136" onclick="seekTo(136)"><span class="ts">[02:16.76]</span><span class="txt">♪ We've known each other for so long ♪</span></div><div class="tl-row" data-ts="141" onclick="seekTo(141)"><span class="ts">[02:21.20]</span><span class="txt">♪ Your heart's been aching but you're too shy to say it ♪</span></div><div class="tl-row" data-ts="145" onclick="seekTo(145)"><span class="ts">[02:25.28]</span><span class="txt">♪ Inside we both know what's been going ♪</span></div><div class="tl-row" data-ts="149" onclick="seekTo(149)"><span class="ts">[02:29.52]</span><span class="txt">♪ We know the game and we're gonna play it ♪</span></div><div class="tl-row" data-ts="153" onclick="seekTo(153)"><span class="ts">[02:33.36]</span><span class="txt">♪ I just wanna tell you how I'm feeling ♪</span></div><div class="tl-row" data-ts="158" onclick="seekTo(158)"><span class="ts">[02:38.64]</span><span class="txt">♪ Gotta make you understand ♪</span></div><div class="tl-row" data-ts="161" onclick="seekTo(161)"><span class="ts">[02:41.40]</span><span class="txt">♪ Never gonna give you up ♪</span></div><div class="tl-row" data-ts="163" onclick="seekTo(163)"><span class="ts">[02:43.44]</span><span class="txt">♪ Never gonna let you down ♪</span></div><div class="tl-row" data-ts="165" onclick="seekTo(165)"><span class="ts">[02:45.72]</span><span class="txt">♪ Never gonna run around and desert you ♪</span></div><div class="tl-row" data-ts="169" onclick="seekTo(169)"><span class="ts">[02:49.80]</span><span class="txt">♪ Never gonna make you cry ♪</span></div><div class="tl-row" data-ts="171" onclick="seekTo(171)"><span class="ts">[02:51.80]</span><span class="txt">♪ Never gonna say goodbye ♪</span></div><div class="tl-row" data-ts="174" onclick="seekTo(174)"><span class="ts">[02:54.04]</span><span class="txt">♪ Never gonna tell a lie and hurt you ♪</span></div><div class="tl-row" data-ts="178" onclick="seekTo(178)"><span class="ts">[02:58.20]</span><span class="txt">♪ Never gonna give you up ♪</span></div><div class="tl-row" data-ts="180" onclick="seekTo(180)"><span class="ts">[03:00.32]</span><span class="txt">♪ Never gonna let you down ♪</span></div><div class="tl-row" data-ts="182" onclick="seekTo(182)"><span class="ts">[03:02.52]</span><span class="txt">♪ Never gonna run around and desert you ♪</span></div><div class="tl-row" data-ts="186" onclick="seekTo(186)"><span class="ts">[03:06.72]</span><span class="txt">♪ Never gonna make you cry ♪</span></div><div class="tl-row" data-ts="188" onclick="seekTo(188)"><span class="ts">[03:08.84]</span><span class="txt">♪ Never gonna say goodbye ♪</span></div><div class="tl-row" data-ts="190" onclick="seekTo(190)"><span class="ts">[03:10.84]</span><span class="txt">♪ Never gonna tell a lie and hurt you ♪</span></div><div class="tl-row" data-ts="195" onclick="seekTo(195)"><span class="ts">[03:15.28]</span><span class="txt">♪ Never gonna give you up ♪</span></div><div class="tl-row" data-ts="197" onclick="seekTo(197)"><span class="ts">[03:17.20]</span><span class="txt">♪ Never gonna let you down ♪</span></div><div class="tl-row" data-ts="199" onclick="seekTo(199)"><span class="ts">[03:19.40]</span><span class="txt">♪ Never gonna run around and desert you ♪</span></div><div class="tl-row" data-ts="203" onclick="seekTo(203)"><span class="ts">[03:23.36]</span><span class="txt">♪ Never gonna make you cry ♪</span></div><div class="tl-row" data-ts="205" onclick="seekTo(205)"><span class="ts">[03:25.68]</span><span class="txt">♪ Never gonna say goodbye ♪</span></div><div class="tl-row" data-ts="207" onclick="seekTo(207)"><span class="ts">[03:27.92]</span><span class="txt">♪ Never gonna tell a lie and hurt you ♪</span></div>
+    </div>
+  </div>
+
+  <section id="summary"><h2>Zusammenfassung</h2><div class="summary-body">
+<div class="key-insights"><h3>Wichtigste Erkenntnisse</h3><ul>
+<li>Das wohl <strong>meistverlinkte Video des Internets</strong> — Rick Astleys „Never Gonna Give You Up" (1987), hier als <strong>4K-Remaster</strong>.</li>
+<li>Video Debrief zog aus dem öffentlichen Video <strong>60 Transcript-Segmente</strong> und beschrieb <strong>41 Szenen-Frames</strong> — Performer, Setting, Outfit, Kameraführung.</li>
+<li>Klassischer 80er-Pop-Clip: <strong>Solo-Performance</strong> plus Tanzeinlagen in wechselnden Kulissen.</li>
+</ul></div>
+<h3>Thema</h3><p>Ein Pop-Musikvideo: <strong>Rick Astley</strong> singt seinen Hit, intercut mit Tanz- und Band-Szenen. Inhaltlich eine Liebeserklärung — „never gonna give you up".</p>
+<h3>Key Facts</h3><div class="kf-stats">
+<div class="stat"><span class="v">1987</span><span class="l">Erscheinungsjahr</span></div>
+<div class="stat"><span class="v">3:33</span><span class="l">Laufzeit</span></div>
+<div class="stat"><span class="v">60</span><span class="l">Transcript-Segmente</span></div>
+<div class="stat"><span class="v">41</span><span class="l">beschriebene Szenen</span></div>
+</div><ul class="kf-rest"><li>Wiederkehrend: <strong>vintage Silber-Mikrofon</strong>, langer heller Mantel bzw. <strong>dunkelgrüne Jacke</strong>.</li></ul>
+<h3>Fazit</h3><p>Perfektes Demo: Video Debrief verwandelt selbst ein reines Musikvideo in eine <strong>durchsuchbare Timeline</strong> aus Text und Bild — Klick auf jede Zeile springt zur Stelle. Und ja — du wurdest gerade ge-rickrollt.</p>
+</div></section>
+
+  <div class="stats">
+    <div class="stat-box"><div class="label">Vision</div><div class="val">Qwen3</div></div>
+    <div class="stat-box"><div class="label">Avg/Frame</div><div class="val">1.716s</div></div>
+    <div class="stat-box"><div class="label">Whisper</div><div class="val">0s</div></div>
+    <div class="stat-box"><div class="label">Scenes</div><div class="val">67</div></div>
+  </div>
+
+  <footer><span class="made">Made with <strong>Video Debrief</strong></span><a class="brand" href="https://starks.design" target="_blank" rel="noopener" title="Starks.Design"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 470.68 79.75" fill="currentColor" aria-label="Starks.Design" class="starks-logo">
+  
+  
+  <path class="st0" d="M45.48,31.62h-14.52c.08-.94-.09-1.74-.5-2.4s-.98-1.17-1.71-1.52c-.73-.35-1.56-.53-2.47-.53-1.6,0-3.06.36-4.36,1.07-1.31.71-2.04,1.64-2.2,2.79-.1.45.05.87.44,1.26.39.39,1.42.75,3.07,1.08l8.9,1.64c4.45.82,7.7,2.31,9.74,4.47s2.78,5,2.21,8.53c-.53,3.06-1.87,5.7-4.04,7.9-2.17,2.21-4.91,3.9-8.24,5.08s-7,1.77-11.02,1.77c-7.09,0-12.39-1.41-15.91-4.24S-.27,52,.04,47.43h15.69c.04,1.47.53,2.56,1.48,3.29s2.21,1.12,3.79,1.16c1.72.06,3.22-.29,4.51-1.04s2.01-1.69,2.17-2.82c.06-.64-.22-1.13-.84-1.47-.61-.33-1.78-.66-3.5-.99l-7.73-1.41c-4.45-.8-7.69-2.41-9.72-4.82-2.03-2.41-2.73-5.49-2.11-9.24.51-2.99,1.72-5.5,3.65-7.52s4.46-3.57,7.6-4.61c3.14-1.04,6.77-1.57,10.89-1.57,6.73,0,11.83,1.35,15.3,4.06,3.47,2.7,4.88,6.43,4.26,11.17Z"/>
+  <path class="st0" d="M73.2,28.69l1.99-11.71h-7.76l1.79-10.78h-16.16l-7.09,42.81c-.58,3.12-.42,5.72.48,7.8.91,2.08,2.55,3.61,4.92,4.58,2.37.98,5.45,1.38,9.24,1.2,1.81-.1,3.41-.3,4.79-.6s2.47-.57,3.29-.81l-.47-11.36c-.35.06-.87.15-1.55.28-.68.13-1.26.19-1.72.19-.7,0-1.26-.1-1.68-.31s-.7-.52-.84-.94-.16-.94-.06-1.57l3.12-18.8h7.71Z"/>
+  <path class="st0" d="M85.28,62.54c-3.2,0-6-.84-8.4-2.52s-4.13-4.23-5.18-7.64-1.15-7.72-.29-12.91c.9-5.42,2.47-9.84,4.73-13.23,2.25-3.4,4.85-5.88,7.79-7.47,2.94-1.58,5.89-2.37,8.86-2.37,2.22,0,4.11.39,5.67,1.16,1.55.77,2.78,1.79,3.7,3.07.92,1.28,1.54,2.68,1.87,4.2h.23l1.29-7.85h16.22l-7.49,44.97h-16.05l1.23-7.38h-.35c-.88,1.52-1.99,2.88-3.34,4.08s-2.91,2.15-4.67,2.84c-1.77.69-3.7,1.04-5.81,1.04ZM93.3,50.12c1.48,0,2.83-.43,4.04-1.3s2.23-2.1,3.08-3.69c.84-1.59,1.43-3.48,1.78-5.67.37-2.22.4-4.13.09-5.72-.31-1.59-.93-2.81-1.86-3.66s-2.13-1.27-3.62-1.27-2.81.42-4,1.27-2.18,2.07-3,3.66c-.82,1.59-1.42,3.5-1.78,5.72-.37,2.23-.41,4.14-.12,5.73s.89,2.81,1.8,3.66c.91.85,2.1,1.27,3.59,1.27Z"/>
+  <path class="st0" d="M116.59,61.95l7.49-44.97h15.69l-1.41,8.55h.47c1.35-3.16,3.04-5.48,5.07-6.94s4.25-2.2,6.65-2.2c.7,0,1.38.05,2.04.16s1.3.25,1.95.43l-2.34,13.82c-.76-.29-1.71-.5-2.84-.63-1.13-.13-2.14-.19-3.02-.19-1.56,0-3.02.36-4.38,1.07-1.36.71-2.51,1.71-3.46,2.99s-1.58,2.77-1.89,4.49l-3.86,23.42h-16.16Z"/>
+  <polygon class="st0" points="202.22 16.98 184.07 16.98 170.6 32.09 170.05 32.09 175.05 1.99 158.89 1.99 148.93 61.95 165.09 61.95 167.21 49.21 170.14 46.15 176.69 61.95 195.19 61.95 183.68 36.7 202.22 16.98"/>
+  <path class="st0" d="M239.08,31.62h-14.52c.08-.94-.09-1.74-.5-2.4s-.98-1.17-1.71-1.52c-.73-.35-1.56-.53-2.47-.53-1.6,0-3.06.36-4.36,1.07-1.31.71-2.04,1.64-2.2,2.79-.1.45.05.87.44,1.26.39.39,1.42.75,3.07,1.08l8.9,1.64c4.45.82,7.7,2.31,9.74,4.47s2.78,5,2.21,8.53c-.53,3.06-1.87,5.7-4.04,7.9-2.17,2.21-4.91,3.9-8.24,5.08s-7,1.77-11.02,1.77c-7.09,0-12.39-1.41-15.91-4.24s-5.13-6.53-4.82-11.1h15.69c.04,1.47.53,2.56,1.48,3.29s2.21,1.12,3.79,1.16c1.72.06,3.22-.29,4.51-1.04s2.01-1.69,2.17-2.82c.06-.64-.22-1.13-.84-1.47-.61-.33-1.78-.66-3.5-.99l-7.73-1.41c-4.45-.8-7.69-2.41-9.72-4.82-2.03-2.41-2.73-5.49-2.11-9.24.51-2.99,1.72-5.5,3.65-7.52s4.46-3.57,7.6-4.61c3.14-1.04,6.77-1.57,10.89-1.57,6.73,0,11.83,1.35,15.3,4.06s4.88,6.43,4.26,11.17Z"/>
+  <path class="st0" d="M246.96,62.8c-2.13,0-3.86-.74-5.21-2.22-1.35-1.48-1.92-3.28-1.73-5.39.18-2.07,1.08-3.83,2.72-5.3,1.64-1.46,3.51-2.19,5.62-2.19s3.7.73,5.08,2.19c1.38,1.47,1.98,3.23,1.8,5.3-.13,1.41-.61,2.68-1.43,3.83-.82,1.15-1.84,2.07-3.06,2.75-1.22.68-2.49,1.02-3.79,1.02Z"/>
+  <path class="st0" d="M276.62,62.89c-3.77,0-6.93-.95-9.48-2.85-2.56-1.9-4.36-4.6-5.4-8.08-1.05-3.49-1.18-7.61-.4-12.37.8-4.72,2.3-8.82,4.49-12.3,2.2-3.48,4.89-6.16,8.1-8.05,3.2-1.89,6.7-2.84,10.48-2.84,2.93,0,5.17.48,6.72,1.45,1.55.97,2.68,2.06,3.38,3.28.7,1.22,1.24,2.22,1.61,3h.58l3.69-22.13h6.91l-9.96,59.96h-6.68l1.17-6.91h-.82c-.64.82-1.54,1.85-2.69,3.09-1.15,1.24-2.67,2.34-4.55,3.31-1.88.97-4.27,1.45-7.16,1.45ZM278.32,56.68c2.77,0,5.25-.73,7.45-2.18,2.19-1.45,4.03-3.48,5.49-6.06,1.46-2.58,2.48-5.58,3.05-8.97.56-3.35.54-6.3-.06-8.83-.6-2.53-1.76-4.5-3.48-5.91-1.72-1.41-3.99-2.12-6.82-2.12s-5.43.74-7.58,2.24-3.89,3.51-5.24,6.06c-1.35,2.55-2.28,5.4-2.81,8.56-.53,3.2-.54,6.11-.03,8.71s1.59,4.67,3.23,6.21c1.65,1.53,3.92,2.3,6.81,2.3Z"/>
+  <path class="st0" d="M343.9,28.28c-.62-2.87-1.73-5.18-3.31-6.92-1.58-1.75-3.46-3.01-5.62-3.79-2.17-.78-4.42-1.17-6.76-1.17-4.04,0-7.75.99-11.12,2.97-3.38,1.98-6.2,4.73-8.46,8.26-2.26,3.53-3.77,7.59-4.54,12.19s-.59,8.64.53,12.11c1.11,3.47,3.07,6.16,5.88,8.08s6.37,2.88,10.68,2.88c3.07,0,5.89-.47,8.48-1.42s4.85-2.27,6.79-3.98,3.45-3.69,4.52-5.96l-6.32-1.87c-.84,1.56-1.88,2.86-3.1,3.91-1.23,1.04-2.63,1.83-4.19,2.34-1.56.52-3.27.77-5.12.77-2.91,0-5.33-.48-7.26-1.45s-3.28-2.55-4.05-4.76c-.75-2.15-.84-5.06-.3-8.67h32.69l.47-2.93c.7-4.2.74-7.73.12-10.6ZM337.23,35.84h-25.59c.43-1.98,1.27-3.94,2.63-5.87,1.5-2.12,3.37-3.87,5.62-5.27s4.67-2.09,7.26-2.09,4.6.57,6.25,1.72c1.65,1.15,2.81,2.72,3.49,4.72.67,1.99.79,4.25.34,6.79Z"/>
+  <path class="st0" d="M379.68,27.05l-6.56,1.76c-.23-1.05-.64-2.07-1.21-3.06-.58-.99-1.46-1.79-2.64-2.43-1.18-.63-2.78-.95-4.81-.95-2.75,0-5.15.63-7.18,1.89-2.03,1.26-3.19,2.85-3.48,4.79-.29,1.7.1,3.05,1.17,4.07,1.07,1.01,2.87,1.84,5.39,2.49l6.44,1.64c3.86,1,6.62,2.49,8.27,4.47,1.65,1.98,2.21,4.55,1.68,7.72-.43,2.58-1.55,4.88-3.37,6.91-1.81,2.03-4.14,3.63-6.97,4.8-2.83,1.17-5.98,1.75-9.46,1.75-4.63,0-8.28-1-10.95-3-2.67-2-4.1-4.9-4.27-8.71l6.91-1.64c.17,2.4,1.04,4.21,2.59,5.43,1.55,1.22,3.73,1.83,6.55,1.83,3.22,0,5.9-.69,8.05-2.06s3.36-3.03,3.66-4.97c.29-1.58-.02-2.9-.92-3.95-.91-1.05-2.48-1.85-4.7-2.37l-7.14-1.75c-3.98-1-6.77-2.52-8.36-4.57s-2.12-4.63-1.6-7.73c.43-2.54,1.53-4.78,3.29-6.73s3.99-3.49,6.68-4.6c2.68-1.11,5.61-1.67,8.77-1.67,4.45,0,7.78.97,9.98,2.92,2.2,1.94,3.6,4.52,4.19,7.74Z"/>
+  <path class="st0" d="M377.24,61.95l7.49-44.97h6.91l-7.49,44.97h-6.91ZM390.3,9.37c-1.35,0-2.5-.46-3.47-1.38-.97-.92-1.45-2.02-1.45-3.31s.48-2.39,1.45-3.31c.97-.92,2.12-1.38,3.47-1.38s2.51.46,3.47,1.38c.97.92,1.45,2.02,1.45,3.31s-.48,2.39-1.45,3.31c-.97.92-2.12,1.38-3.47,1.38Z"/>
+  <path class="st0" d="M404.14,79.75c-3.36,0-6.17-.42-8.43-1.27-2.26-.85-4.08-1.96-5.45-3.34-1.37-1.38-2.4-2.84-3.1-4.41l6.21-3.86c.47.82,1.07,1.76,1.82,2.82.74,1.06,1.87,1.99,3.38,2.78,1.51.79,3.64,1.19,6.39,1.19,3.61,0,6.77-.88,9.49-2.64,2.71-1.75,4.39-4.51,5.04-8.26l1.41-9.14h-.58c-.63.82-1.5,1.83-2.61,3.03-1.11,1.2-2.61,2.26-4.48,3.19-1.88.93-4.28,1.39-7.2,1.39-3.65,0-6.77-.86-9.37-2.58s-4.46-4.22-5.58-7.5c-1.12-3.28-1.29-7.26-.51-11.94.76-4.61,2.23-8.63,4.4-12.05s4.86-6.08,8.06-7.96c3.2-1.89,6.7-2.83,10.48-2.83,2.93,0,5.18.48,6.75,1.45,1.57.97,2.72,2.06,3.44,3.28s1.27,2.22,1.64,3h.7l1.17-7.14h6.68l-7.61,46.26c-.64,3.86-2.04,7.01-4.19,9.44-2.15,2.43-4.78,4.21-7.9,5.36-3.12,1.14-6.47,1.71-10.04,1.71ZM407.77,55.04c2.75,0,5.21-.63,7.36-1.9s3.95-3.09,5.37-5.48c1.42-2.38,2.41-5.23,2.96-8.55.55-3.24.51-6.1-.12-8.58s-1.8-4.42-3.53-5.83c-1.73-1.41-3.99-2.11-6.78-2.11-2.95,0-5.49.74-7.63,2.22s-3.87,3.48-5.2,5.97c-1.33,2.5-2.25,5.27-2.75,8.32-.51,3.12-.49,5.88.06,8.27.55,2.39,1.66,4.27,3.35,5.62s3.99,2.03,6.89,2.03Z"/>
+  <path class="st0" d="M441.25,34.9l-4.45,27.05h-6.91l7.49-44.97h6.68l-1.17,7.02h.58c1.41-2.28,3.31-4.12,5.71-5.52,2.4-1.4,5.3-2.09,8.7-2.09,3.01,0,5.55.62,7.63,1.86,2.08,1.24,3.55,3.11,4.42,5.62.87,2.51.99,5.68.37,9.5l-4.8,28.58h-6.91l4.68-28.11c.59-3.51.13-6.27-1.36-8.26-1.49-1.99-3.85-2.99-7.07-2.99-2.23,0-4.28.48-6.16,1.43-1.89.96-3.48,2.35-4.77,4.19s-2.18,4.06-2.65,6.68Z"/>
+</svg></a></footer>
+</div>
+<script>
+
+var __mode = "yt";
+var __ytId = "dQw4w9WgXcQ";
+var __player = null;
+var __isHttp = location.protocol.indexOf("http") === 0;
+var __rows = [];
+
+function __sync(t) {
+  if (!__rows.length) return;
+  var act = null;
+  for (var i = 0; i < __rows.length; i++) { if (__rows[i].ts <= t + 0.25) act = __rows[i]; else break; }
+  if (act && !act.el.classList.contains("active")) {
+    var cur = document.querySelector(".tl-row.active");
+    if (cur) cur.classList.remove("active");
+    act.el.classList.add("active");
+    act.el.scrollIntoView({ block: "center", behavior: "smooth" });
+  }
+}
+
+function __buildYTPlayer() {
+  var pw = document.getElementById("player-wrap");
+  if (!pw) return;
+  pw.innerHTML = '<div id="dw-yt-player"></div>';
+  var make = function () {
+    __player = new YT.Player("dw-yt-player", {
+      videoId: __ytId, width: "100%", height: "100%",
+      playerVars: { rel: 0, modestbranding: 1 },
+      events: { onReady: function (e) {
+        __player = e.target;
+        setInterval(function () {
+          if (__player && __player.getCurrentTime) __sync(__player.getCurrentTime());
+        }, 500);
+      } }
+    });
+  };
+  if (window.YT && window.YT.Player) make();
+  else {
+    if (!window.YT) { var tag = document.createElement("script"); tag.src = "https://www.youtube.com/iframe_api"; document.head.appendChild(tag); }
+    window.onYouTubeIframeAPIReady = make;
+  }
+}
+
+function seekTo(s) {
+  s = Math.floor(s);
+  if (__mode === "yt") {
+    if (__player && __player.seekTo) { __player.seekTo(s, true); if (__player.playVideo) __player.playVideo(); return; }
+    window.open("https://www.youtube.com/watch?v=" + __ytId + "&t=" + s + "s", "_blank");
+    return;
+  }
+  var v = document.getElementById("local-video");
+  if (v) { v.currentTime = s; v.play(); }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".tl-row").forEach(function (el) {
+    __rows.push({ ts: parseFloat(el.getAttribute("data-ts")) || 0, el: el });
+    el.addEventListener("click", function () {
+      var cur = document.querySelector(".tl-row.active");
+      if (cur) cur.classList.remove("active");
+      el.classList.add("active");
+    });
+  });
+  if (__mode === "yt" && __isHttp) __buildYTPlayer();
+  var v = document.getElementById("local-video");
+  if (v) v.addEventListener("timeupdate", function () { __sync(v.currentTime); });
+});
+
+</script>
+</body>
+</html>

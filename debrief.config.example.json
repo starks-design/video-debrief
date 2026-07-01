@@ -1,0 +1,44 @@
+{
+  "output_dir": "./debrief-output",
+  "vision": {
+    "base_url": "http://localhost:11434/v1/chat/completions",
+    "model": "",
+    "api_key_env": "",
+    "backend": "ollama",
+    "context_window": 2
+  },
+  "insights": {
+    "base_url": "http://localhost:11434/v1/chat/completions",
+    "model": "",
+    "api_key_env": "",
+    "enabled": true
+  },
+  "whisper": {
+    "mode": "auto",
+    "bin": "whisper-cli",
+    "model_path": "",
+    "language": "auto"
+  },
+  "summary": {
+    "engine": "host-agent",
+    "base_url": "",
+    "model": "",
+    "api_key_env": ""
+  },
+  "relevance": {
+    "enabled": false,
+    "profile": ""
+  },
+  "branding": {
+    "footer": true
+  },
+  "scene": {
+    "threshold": 0.3,
+    "heartbeat_seconds": 30.0,
+    "max_frames": 0
+  },
+  "cleanup": {
+    "delete_video": true,
+    "delete_frames": true
+  }
+}
