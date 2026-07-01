@@ -15,10 +15,24 @@ Du richtest Video Debrief ein. Arbeite diese Schritte der Reihe nach ab, frage d
 Nutzer nur dort, wo unten ausdrücklich „**frage**" steht, und bestätige
 Installationen vor der Ausführung.
 
-### 1. Betriebssystem erkennen
+### 1. Betriebssystem und Ausgabesprache erkennen
 Ermittle das OS (`uname -s`, unter Windows `$OS`/PowerShell). Wähle danach den
 passenden Paketmanager: macOS → `brew`, Debian/Ubuntu → `apt` + `pipx`,
 Fedora → `dnf`, Windows → `winget`/`choco`.
+
+**Ausgabesprache** — sie bestimmt die Sprache von Reports, Zusammenfassungen,
+Insights und Frame-Beschreibungen. Lies die OS-Locale (`echo $LANG` / `locale` unter
+macOS/Linux, `Get-Culture` unter Windows) und leite einen ISO-Code ab (z.B. `de`,
+`en`, `es`). Dann **frage** den Nutzer zur Bestätigung:
+
+> „Reports und Zusammenfassungen auf **<erkannte Sprache>** — passt das, oder eine
+> andere Sprache?"
+
+Trage den bestätigten ISO-Code als Top-Level-Key `language` in `debrief.config.json`
+ein (Schritt 7). Default `en`, wenn unklar. Jede Sprache funktioniert: Die Prompts
+weisen das Modell an, in ihr zu antworten; die Report-Labels sind für `en`/`de`
+lokalisiert und fallen für andere auf Englisch zurück (der Inhalt bleibt in der
+gewählten Sprache).
 
 ### 2. Basis-Tools prüfen + ggf. installieren
 Prüfe `ffmpeg`, `ffprobe`, `yt-dlp` (`command -v` / `where`). Fehlt etwas,

@@ -18,6 +18,9 @@ from pathlib import Path
 
 DEFAULTS = {
     "output_dir": "./debrief-output",
+    # Output language for report labels, summary, insights and frame descriptions.
+    # ISO code ("en", "de", "es", …). Set by the setup agent (INSTALL.md).
+    "language": "en",
     "vision": {
         "base_url": "http://localhost:11434/v1/chat/completions",  # Ollama default
         "model": "",            # vom Setup gesetzt (z.B. ein Qwen-VL / Gemma-Vision Tag)
@@ -97,3 +100,66 @@ def resolve_output_dir(cfg: dict) -> Path:
     p = Path(cfg["output_dir"]).expanduser()
     p.mkdir(parents=True, exist_ok=True)
     return p
+
+
+# --- Language ---------------------------------------------------------------
+# `language` (ISO code) drives the OUTPUT language: report UI labels, summary,
+# insights and frame descriptions. Prompts are written in English and instruct
+# the model to answer in this language, so any language works even without a
+# label set below (UI then falls back to English labels, content stays localized).
+
+_LANGUAGE_NAMES = {
+    "en": "English", "de": "German", "es": "Spanish", "fr": "French",
+    "it": "Italian", "pt": "Portuguese", "nl": "Dutch", "pl": "Polish",
+    "ru": "Russian", "ja": "Japanese", "zh": "Chinese", "ko": "Korean",
+}
+
+# UI labels that appear verbatim in the report. Only en/de are curated; other
+# languages fall back to English UI while the LLM-generated content is localized.
+REPORT_LABELS = {
+    "en": {
+        "transcript": "Transcript",
+        "segments": "segments",
+        "local_suffix": "local",
+        "video_deleted_title": "Video processed locally and deleted.",
+        "video_deleted_body": ("Video Debrief removes video &amp; frames after analysis — "
+                               "only this report stays. The timeline on the right still works fully."),
+        "summary": "Summary",
+        "key_insights": "Key Insights",
+        "topic": "Topic",
+        "key_facts": "Key Facts",
+        "bottom_line": "Bottom Line",
+        "relevance": "Relevance for you",
+        "summary_placeholder": "— added by the agent (see SUMMARY_TODO.md) —",
+    },
+    "de": {
+        "transcript": "Transkript",
+        "segments": "Segmente",
+        "local_suffix": "lokal",
+        "video_deleted_title": "Video lokal verarbeitet und gelöscht.",
+        "video_deleted_body": ("Video Debrief entfernt Video &amp; Frames nach der Analyse — "
+                               "nur dieser Report bleibt. Die Timeline rechts ist trotzdem voll nutzbar."),
+        "summary": "Zusammenfassung",
+        "key_insights": "Wichtigste Erkenntnisse",
+        "topic": "Thema",
+        "key_facts": "Key Facts",
+        "bottom_line": "Fazit",
+        "relevance": "Relevanz für dich",
+        "summary_placeholder": "— wird vom Agenten ergänzt (siehe SUMMARY_TODO.md) —",
+    },
+}
+
+
+def language_code(cfg: dict) -> str:
+    return (cfg.get("language") or "en").split("-")[0].lower()
+
+
+def language_name(cfg: dict) -> str:
+    """Human-readable language name for prompt instructions (e.g. 'German')."""
+    code = language_code(cfg)
+    return _LANGUAGE_NAMES.get(code, code)
+
+
+def get_labels(cfg: dict) -> dict:
+    """Report UI labels for the configured language, English as fallback."""
+    return REPORT_LABELS.get(language_code(cfg), REPORT_LABELS["en"])

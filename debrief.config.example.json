@@ -1,5 +1,6 @@
 {
   "output_dir": "./debrief-output",
+  "language": "en",
   "vision": {
     "base_url": "http://localhost:11434/v1/chat/completions",
     "model": "",

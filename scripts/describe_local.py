@@ -17,11 +17,13 @@ import urllib.request
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from config import load_config, get_api_key  # noqa: E402
+from config import load_config, get_api_key, language_name  # noqa: E402
 
 _CFG = load_config()
 VISION_URL = _CFG["vision"]["base_url"]
 DEFAULT_MODEL = _CFG["vision"]["model"]            # vom Setup gesetzt
+# Frame descriptions follow the configured output language (default English).
+_LANG_INSTRUCTION = f"\n\nWrite the entire description in {language_name(_CFG)}."
 
 
 def _omlx_base() -> str:
@@ -234,6 +236,7 @@ def describe_all(
             frame_prompt = CONTEXT_PROMPT.format(context_block=context_block)
         else:
             frame_prompt = prompt
+        frame_prompt = frame_prompt + _LANG_INSTRUCTION
 
         out = describe_one(model, path, frame_prompt)
         results.append({

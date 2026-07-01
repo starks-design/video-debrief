@@ -6,7 +6,11 @@ passend zum 'komplett lokal'-Versprechen. Dezenter Branding-Footer.
 from __future__ import annotations
 
 import re
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from config import get_labels  # noqa: E402
 
 # Starks.Design Bildwortmarke (einfärbbar via currentColor), self-contained inline.
 try:
@@ -121,7 +125,9 @@ def _esc(s: str) -> str:
 def render_report(meta: dict, frames_data: dict, transcript: dict, vision: dict,
                   total_time: float, work_dir: Path | None,
                   summary: str = "", insights: list[dict] | None = None,
-                  branding: bool = True, embed_local: bool = True) -> str:
+                  branding: bool = True, embed_local: bool = True,
+                  language: str = "en") -> str:
+    lbl = get_labels({"language": language})
     title = meta.get("title", "Video Debrief report")
     uploader = meta.get("uploader", "")
     duration = frames_data.get("duration", 0)
@@ -183,15 +189,14 @@ def render_report(meta: dict, frames_data: dict, transcript: dict, vision: dict,
         )
     else:
         video_block = ('<div id="player-wrap" class="no-video"><div>'
-                       '<strong>Video lokal verarbeitet und gelöscht.</strong><br>'
-                       'Video Debrief entfernt Video &amp; Frames nach der Analyse — nur dieser '
-                       'Report bleibt. Die Timeline rechts ist trotzdem voll nutzbar.</div></div>')
+                       f'<strong>{lbl["video_deleted_title"]}</strong><br>'
+                       f'{lbl["video_deleted_body"]}</div></div>')
 
     if summary:
-        summary_html = f'<section id="summary"><h2>Zusammenfassung</h2><div class="summary-body">{summary}</div></section>'
+        summary_html = f'<section id="summary"><h2>{lbl["summary"]}</h2><div class="summary-body">{summary}</div></section>'
     else:
-        summary_html = ('<section id="summary"><h2>Zusammenfassung</h2><div class="summary-body">'
-                        '<p class="placeholder">— wird vom Agenten ergänzt (siehe SUMMARY_TODO.md) —</p>'
+        summary_html = (f'<section id="summary"><h2>{lbl["summary"]}</h2><div class="summary-body">'
+                        f'<p class="placeholder">{lbl["summary_placeholder"]}</p>'
                         '</div></section>')
 
     if branding:
@@ -207,7 +212,7 @@ def render_report(meta: dict, frames_data: dict, transcript: dict, vision: dict,
     seek_script = _SEEK_JS.replace("__MODE__", player_mode).replace("__YTID__", yt_id or "")
 
     return f"""<!DOCTYPE html>
-<html lang="de">
+<html lang="{language}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -293,15 +298,15 @@ def render_report(meta: dict, frames_data: dict, transcript: dict, vision: dict,
     <div class="meta">
       {"<span>" + _esc(uploader) + "</span>" if uploader else ""}
       <span>{fmt_time(duration)}</span>
-      <span>{transcript.get('segment_count',0)} Segmente</span>
-      <span>{total_time:.0f}s lokal</span>
+      <span>{transcript.get('segment_count',0)} {lbl["segments"]}</span>
+      <span>{total_time:.0f}s {lbl["local_suffix"]}</span>
     </div>
   </header>
 
   <div class="top-row">
     {video_block}
     <div class="tl-panel">
-      <h2>Transcript</h2>
+      <h2>{lbl["transcript"]}</h2>
       {"".join(tl_aud)}
     </div>
   </div>

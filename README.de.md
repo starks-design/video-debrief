@@ -102,6 +102,11 @@ Modell in `vision` ein. Drei gängige Backends:
 | **LM Studio** | `http://localhost:1234/v1/chat/completions` | `lmstudio` |
 | **oMLX** (Apple Silicon) | `http://localhost:8000/v1/chat/completions` | `omlx` |
 
+> **Apple-Silicon-Tipp:** Ollama fährt Vision-Modelle über Metal. Für
+> MLX-beschleunigte Vision (spürbar schneller auf M-Chips) nimm **oMLX** oder LM
+> Studios MLX-Runtime — Ollamas MLX-Backend (0.19+) beschleunigt aktuell nur
+> Text-Modelle.
+
 Als `vision.model` ein **vision-fähiges** Modell eintragen (Qwen-VL- oder
 Gemma-Vision-Familie). Welche Tags dein Backend kennt, listet:
 

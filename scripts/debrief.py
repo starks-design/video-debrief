@@ -39,7 +39,7 @@ _signal.signal(_signal.SIGTERM, _sigterm_handler)
 SCRIPT_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPT_DIR))
 
-from config import load_config, get_api_key  # noqa: E402
+from config import load_config, get_api_key, language_name  # noqa: E402
 from scene_frames import extract_all as extract_scene_frames  # noqa: E402
 from describe_local import describe_all  # noqa: E402
 from whisper_local import transcribe_auto  # noqa: E402
@@ -131,15 +131,15 @@ def get_video_metadata(url_or_path: str) -> dict:
 
 
 INSIGHTS_PROMPT = (
-    "Analysiere dieses Video-Transcript. Extrahiere die 10-15 WICHTIGSTEN Erkenntnisse, "
-    "Fakten, Zahlen, Schlussfolgerungen oder Key-Statements.\n\n"
-    "Für jede Erkenntnis gib ein JSON-Objekt zurück mit:\n"
-    "- \"ts\": Timestamp in Sekunden (float) aus dem Transcript\n"
-    "- \"text\": die Erkenntnis in max 8 Wörtern (GLEICHE SPRACHE wie Transcript)\n\n"
-    "Antworte NUR mit einem JSON-Array, kein Markdown, keine Erklärung.\n"
-    "Fokus: konkrete Zahlen/Stats, Vergleiche, Schlussfolgerungen, Empfehlungen, "
-    "überraschende Fakten, genannte Produkte/Tools, Deadlines.\n"
-    "Ignoriere: Füllwörter, Begrüßungen, Selbstreferenzen, Übergänge.\n\n"
+    "Analyze this video transcript. Extract the 10-15 MOST IMPORTANT insights, "
+    "facts, numbers, conclusions or key statements.\n\n"
+    "For each insight return a JSON object with:\n"
+    "- \"ts\": timestamp in seconds (float) from the transcript\n"
+    "- \"text\": the insight in max 8 words, written in {lang_name}\n\n"
+    "Answer ONLY with a JSON array, no markdown, no explanation.\n"
+    "Focus: concrete numbers/stats, comparisons, conclusions, recommendations, "
+    "surprising facts, named products/tools, deadlines.\n"
+    "Ignore: filler words, greetings, self-references, transitions.\n\n"
     "Transcript:\n{transcript}"
 )
 
@@ -163,7 +163,7 @@ def extract_insights(transcript: dict, model: str | None = None) -> list[dict]:
     if len(transcript_text) > 40000:
         transcript_text = transcript_text[:40000] + "\n[... truncated]"
 
-    prompt = INSIGHTS_PROMPT.format(transcript=transcript_text)
+    prompt = INSIGHTS_PROMPT.format(transcript=transcript_text, lang_name=language_name(_CFG))
     payload = json.dumps({
         "model": model,
         "messages": [{"role": "user", "content": prompt}],
@@ -386,6 +386,7 @@ def main() -> int:
         summary=summary_html, insights=insights,
         branding=_CFG["branding"]["footer"],
         embed_local=not _cleanup.get("delete_video", True),
+        language=_CFG.get("language", "en"),
     )
     (work / "report.html").write_text(html, encoding="utf-8")
 
